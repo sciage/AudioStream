@@ -36,11 +36,47 @@ public class Player {
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
-                    mediaPlayer.start();
+                    playPlayer();
+                }
+            });
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    MainActivity.flipPlayPauseButton(false);
                 }
             });
             mediaPlayer.prepareAsync();
             } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void pausePlayer(){
+        try {
+            mediaPlayer.pause();
+            MainActivity.flipPlayPauseButton(false);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void playPlayer(){
+        try {
+            mediaPlayer.start();
+            MainActivity.flipPlayPauseButton(true);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void togglePlayer(){
+        try {
+            if (mediaPlayer.isPlaying()){
+                pausePlayer();
+            } else {
+                playPlayer();
+            }
+        } catch (Exception e){
             e.printStackTrace();
         }
     }

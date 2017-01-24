@@ -11,7 +11,8 @@
     tools:context="in.voiceme.musicstreamsample.MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/playbutton"
         android:text="Hello World!" />
 </RelativeLayout>
