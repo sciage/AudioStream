@@ -17,5 +17,25 @@
         android:id="@+id/playbutton"
         android:src="@drawable/play_button" />
 
+    <view
+        android:clickable="true"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        class="mbanje.kurt.fabbutton.FabButton"
+        android:id="@+id/determinate"
+        android:color="?attr/colorPrimaryDark"
+        android:layout_below="@+id/playbutton"
+        app:fbb_showShadow="true"
+        android:src="@drawable/ic_fab_play"
+        android:indeterminate="true"
+        android:max="100"
+        app:fbb_autoStart="true"
+        app:fbb_progressColor="?attr/colorAccent"
+        app:fbb_progressWidthRatio="0.1"
+        app:fbb_endBitmap="@drawable/stop_button"
+        app:fbb_showEndBitmap="true"
+        app:fbb_hideProgressOnComplete="true"
+        />
+
 
 </RelativeLayout>

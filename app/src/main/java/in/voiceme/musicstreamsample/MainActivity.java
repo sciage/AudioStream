@@ -13,8 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
+import mbanje.kurt.fabbutton.FabButton;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     static ImageView flipButton;
+    FabButton button;
+    private ProgressHelper helper;
 
     PlayerService mBoundService;
     boolean mServiceBound = false;
@@ -46,7 +50,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         flipButton = (ImageView) findViewById(R.id.playbutton);
+        button = (FabButton) findViewById(R.id.determinate);
+
+        helper = new ProgressHelper(button,this);
 
         flipButton.setOnClickListener(this);
     }
@@ -78,8 +86,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view.getId() == R.id.playbutton){
             if (!mServiceBound){
                 startStreamService("https://s3-us-west-2.amazonaws.com/voiceme-audio-bucket/1484987887currentRecording.mp3");
+                helper.startIndeterminate();
+
             } else {
                 mBoundService.togglePlayer();
+                helper.stopDeterminate();
             }
         }
 
@@ -92,9 +103,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    public static void flipPlayPauseButton(boolean isPlaying){
+    public void flipPlayPauseButton(boolean isPlaying){
         if (isPlaying){
             flipButton.setImageResource(R.drawable.stop_button);
+            helper.stopDeterminate();
         } else {
             flipButton.setImageResource(R.drawable.play_button);
         }
