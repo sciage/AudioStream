@@ -11,20 +11,13 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="in.voiceme.musicstreamsample.MainActivity">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/playbutton"
-        android:src="@drawable/play_button" />
-
     <view
         android:clickable="true"
         android:layout_width="80dp"
         android:layout_height="80dp"
         class="mbanje.kurt.fabbutton.FabButton"
-        android:id="@+id/determinate"
+        android:id="@+id/playbutton"
         android:color="?attr/colorPrimaryDark"
-        android:layout_below="@+id/playbutton"
         app:fbb_showShadow="true"
         android:src="@drawable/ic_fab_play"
         android:indeterminate="true"

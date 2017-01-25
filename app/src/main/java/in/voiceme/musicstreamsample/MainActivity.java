@@ -11,13 +11,11 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageView;
 
 import mbanje.kurt.fabbutton.FabButton;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    static ImageView flipButton;
-    FabButton button;
+public class MainActivity extends AppCompatActivity {
+    FabButton flipButton;
     private ProgressHelper helper;
 
     PlayerService mBoundService;
@@ -51,12 +49,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
 
-        flipButton = (ImageView) findViewById(R.id.playbutton);
-        button = (FabButton) findViewById(R.id.determinate);
+        flipButton = (FabButton) findViewById(R.id.playbutton);
 
-        helper = new ProgressHelper(button,this);
+        helper = new ProgressHelper(flipButton,this);
 
-        flipButton.setOnClickListener(this);
+        flipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mServiceBound){
+                    startStreamService("https://s3-us-west-2.amazonaws.com/voiceme-audio-bucket/1484987887currentRecording.mp3");
+                    helper.startIndeterminate();
+
+                } else {
+                    mBoundService.togglePlayer();
+                    helper.stopDeterminate();
+                }
+            }
+        });
     }
 
     @Override
@@ -81,21 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.playbutton){
-            if (!mServiceBound){
-                startStreamService("https://s3-us-west-2.amazonaws.com/voiceme-audio-bucket/1484987887currentRecording.mp3");
-                helper.startIndeterminate();
-
-            } else {
-                mBoundService.togglePlayer();
-                helper.stopDeterminate();
-            }
-        }
-
-    }
-
     private void startStreamService(String url){
         Intent intent = new Intent(this, PlayerService.class);
         intent.putExtra("url", url);
@@ -105,10 +99,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void flipPlayPauseButton(boolean isPlaying){
         if (isPlaying){
-            flipButton.setImageResource(R.drawable.stop_button);
+            flipButton.setIcon(R.drawable.stop_button, R.drawable.ic_fab_play);
             helper.stopDeterminate();
         } else {
-            flipButton.setImageResource(R.drawable.play_button);
+            flipButton.setIcon(R.drawable.play_button, R.drawable.stop_button);
         }
     }
 }

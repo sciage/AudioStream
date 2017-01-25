@@ -17,7 +17,6 @@ public class PlayerService extends Service {
     MediaPlayer mediaPlayer = new MediaPlayer();
     private final IBinder mBinder = new MyBinder();
 
-
     public class MyBinder extends Binder{
         PlayerService getService(){
             return PlayerService.this;
