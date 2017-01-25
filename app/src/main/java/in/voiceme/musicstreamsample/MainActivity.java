@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     static ImageView flipButton;
+
     PlayerService mBoundService;
     boolean mServiceBound = false;
 
@@ -48,9 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         flipButton = (ImageView) findViewById(R.id.playbutton);
 
         flipButton.setOnClickListener(this);
-
-        startStreamService("https://s3-us-west-2.amazonaws.com/voiceme-audio-bucket/1484987887currentRecording.mp3");
-
     }
 
     @Override
@@ -77,9 +75,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (mServiceBound){
-            mBoundService.togglePlayer();
+        if (view.getId() == R.id.playbutton){
+            if (!mServiceBound){
+                startStreamService("https://s3-us-west-2.amazonaws.com/voiceme-audio-bucket/1484987887currentRecording.mp3");
+            } else {
+                mBoundService.togglePlayer();
+            }
         }
+
     }
 
     private void startStreamService(String url){

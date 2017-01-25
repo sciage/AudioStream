@@ -48,6 +48,7 @@ public class PlayerService extends Service {
         }
 
         mediaPlayer = new MediaPlayer();
+
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mediaPlayer.setDataSource(url);
@@ -78,6 +79,7 @@ public class PlayerService extends Service {
         try {
             mediaPlayer.pause();
             flipPlayPauseButton(false);
+
             unregisterReceiver(noisyAudioStreamReceiver);
         } catch (Exception e){
             e.printStackTrace();
