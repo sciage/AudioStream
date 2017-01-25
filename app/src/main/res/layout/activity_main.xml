@@ -10,9 +10,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="in.voiceme.musicstreamsample.MainActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/playbutton"
-        android:text="Hello World!" />
+        android:src="@drawable/play_button" />
 </RelativeLayout>
