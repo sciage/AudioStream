@@ -1,7 +1,10 @@
 package in.voiceme.musicstreamsample;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -75,6 +78,7 @@ public class PlayerService extends Service {
         try {
             mediaPlayer.pause();
             flipPlayPauseButton(false);
+            unregisterReceiver(noisyAudioStreamReceiver);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -100,4 +104,59 @@ public class PlayerService extends Service {
             e.printStackTrace();
         }
     }
+
+    // Audio Focus Section
+    private AudioManager am;
+    private boolean playingBeforeInterruption = false;
+
+    public void getAudioFocusAndPlay(){
+        am = (AudioManager) this.getBaseContext().getSystemService((Context.AUDIO_SERVICE));
+
+        int result = am.requestAudioFocus(afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED){
+            mediaPlayer.start();
+            registerReceiver(noisyAudioStreamReceiver, filter);
+        }
+    }
+
+    AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            // A Phone Call coming in, audio will reduce slowly
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT){
+                if (mediaPlayer.isPlaying()){
+                    playingBeforeInterruption = true;
+                } else {
+                    playingBeforeInterruption = false;
+                }
+                pausePlayer();
+                // Gained back audio focus
+            } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN){
+                if (playingBeforeInterruption){
+                    pausePlayer();
+                }
+                // Lost audio focus completely
+            } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS){
+                pausePlayer();
+                // TO prevent app to auto start audio after getting stopped
+                am.abandonAudioFocus(afChangeListener);
+            }
+        }
+    };
+
+    // Audio Rerouted
+    private class NoisyAudioStreamReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())){
+                pausePlayer();
+            }
+        }
+    }
+
+    private IntentFilter filter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+    private NoisyAudioStreamReceiver noisyAudioStreamReceiver = new NoisyAudioStreamReceiver();
+
 }
